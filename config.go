@@ -47,17 +47,18 @@ var (
 
 type config struct {
 	// General application behavior
-	ConfigFile    *cfgutil.ExplicitString `short:"C" long:"configfile" description:"Path to configuration file"`
-	ShowVersion   bool                    `short:"V" long:"version" description:"Display version information and exit"`
-	Create        bool                    `long:"create" description:"Create the wallet if it does not exist"`
-	CreateTemp    bool                    `long:"createtemp" description:"Create a temporary simulation wallet (pass=password) in the data directory indicated; must call with --datadir"`
-	AppDataDir    *cfgutil.ExplicitString `short:"A" long:"appdata" description:"Application data directory for wallet config, databases and logs"`
-	TestNet3      bool                    `long:"testnet" description:"Use the test Bitcoin network (version 3) (default mainnet)"`
-	SimNet        bool                    `long:"simnet" description:"Use the simulation test network (default mainnet)"`
-	NoInitialLoad bool                    `long:"noinitialload" description:"Defer wallet creation/opening on startup and enable loading wallets over RPC"`
-	DebugLevel    string                  `short:"d" long:"debuglevel" description:"Logging level {trace, debug, info, warn, error, critical}"`
-	LogDir        string                  `long:"logdir" description:"Directory to log output."`
-	Profile       string                  `long:"profile" description:"Enable HTTP profiling on given port -- NOTE port must be between 1024 and 65536"`
+	ConfigFile     *cfgutil.ExplicitString `short:"C" long:"configfile" description:"Path to configuration file"`
+	ShowVersion    bool                    `short:"V" long:"version" description:"Display version information and exit"`
+	Create         bool                    `long:"create" description:"Create the wallet if it does not exist"`
+	CreateTemp     bool                    `long:"createtemp" description:"Create a temporary simulation wallet (pass=password) in the data directory indicated; must call with --datadir"`
+	AppDataDir     *cfgutil.ExplicitString `short:"A" long:"appdata" description:"Application data directory for wallet config, databases and logs"`
+	TestNet3       bool                    `long:"testnet" description:"Use the test Bitcoin network (version 3) (default mainnet)"`
+	RegressionTest bool                    `long:"regtest" description:"Use the regression test network (default mainnet)"`
+	SimNet         bool                    `long:"simnet" description:"Use the simulation test network (default mainnet)"`
+	NoInitialLoad  bool                    `long:"noinitialload" description:"Defer wallet creation/opening on startup and enable loading wallets over RPC"`
+	DebugLevel     string                  `short:"d" long:"debuglevel" description:"Logging level {trace, debug, info, warn, error, critical}"`
+	LogDir         string                  `long:"logdir" description:"Directory to log output."`
+	Profile        string                  `long:"profile" description:"Enable HTTP profiling on given port -- NOTE port must be between 1024 and 65536"`
 
 	// Wallet options
 	WalletPass string `long:"walletpass" default-mask:"-" description:"The public wallet password -- Only required if the wallet was created with one"`
@@ -365,8 +366,12 @@ func loadConfig() (*config, []string, error) {
 		activeNet = &netparams.SimNetParams
 		numNets++
 	}
+	if cfg.RegressionTest {
+		activeNet = &netparams.RegressionNetParams
+		numNets++
+	}
 	if numNets > 1 {
-		str := "%s: The testnet and simnet params can't be used " +
+		str := "%s: The testnet, simnet, and regtest params can't be used " +
 			"together -- choose one"
 		err := fmt.Errorf(str, "loadConfig")
 		fmt.Fprintln(os.Stderr, err)

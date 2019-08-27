@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2015 The btcsuite developers
+// Copyright (c) 2013-2019 The btcsuite developers
 // Use of this source code is governed by an ISC
 // license that can be found in the LICENSE file.
 
@@ -28,6 +28,14 @@ var TestNet3Params = Params{
 	Params:        &chaincfg.TestNet3Params,
 	RPCClientPort: "18334",
 	RPCServerPort: "18332",
+}
+
+// RegressionNetParams contains parameters specific running btcwallet and
+// btcd on the regression test network (wire.TestNet).
+var RegressionNetParams = Params{
+	Params:        &chaincfg.RegressionNetParams,
+	RPCClientPort: "18446",
+	RPCServerPort: "18442",
 }
 
 // SimNetParams contains parameters specific to the simulation test network
